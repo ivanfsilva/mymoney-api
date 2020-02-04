@@ -1,7 +1,7 @@
 package br.com.ivanfsilva.mymoneyapi.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
@@ -13,8 +13,8 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigo;
 
-    @NotBlank(message = "Informe um nome")
-    @Size(min = 3, max = 50, message = "O nome da categoria deve ter entre {min} e {max} caracteres")
+    @NotNull
+    @Size(min = 3, max = 50)
     private String nome;
 
     public Long getCodigo() {
