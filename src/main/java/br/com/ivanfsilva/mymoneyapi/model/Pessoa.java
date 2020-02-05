@@ -1,5 +1,7 @@
 package br.com.ivanfsilva.mymoneyapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -54,6 +56,12 @@ public class Pessoa {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    @JsonIgnore
+    @Transient
+    public boolean isInativo() {
+        return !this.ativo;
     }
 
     @Override
