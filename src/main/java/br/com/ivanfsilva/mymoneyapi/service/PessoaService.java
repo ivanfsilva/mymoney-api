@@ -2,11 +2,10 @@ package br.com.ivanfsilva.mymoneyapi.service;
 
 import br.com.ivanfsilva.mymoneyapi.model.Pessoa;
 import br.com.ivanfsilva.mymoneyapi.repository.PessoaRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class PessoaService {
@@ -15,14 +14,24 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     public Pessoa atualizar(Long codigo, Pessoa pessoa) {
-        Optional<Pessoa> pessoaSalva = pessoaRepository.findById(codigo);
+        Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
 
-        if (!pessoaSalva.isPresent()) {
+        BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
+        return pessoaRepository.save(pessoaSalva);
+    }
+
+    public void atualizarPropriedadeAtivo(Long codigo, Boolean ativo) {
+        Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
+        pessoaSalva.setAtivo(ativo);
+        pessoaRepository.save(pessoaSalva);
+    }
+
+    private Pessoa buscarPessoaPeloCodigo(Long codigo) {
+        Pessoa pessoaSalva = pessoaRepository.findOne(codigo);
+        if (pessoaSalva == null) {
             throw new EmptyResultDataAccessException(1);
         }
-        // BeanUtils.copyProperties(pessoa, pessoaSalva,"codigo");
-        pessoa.setCodigo(codigo);
-
-        return pessoaRepository.save(pessoa);
+        return pessoaSalva;
     }
+
 }
