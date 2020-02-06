@@ -4,6 +4,7 @@ import br.com.ivanfsilva.mymoneyapi.event.RecursoCriadoEvent;
 import br.com.ivanfsilva.mymoneyapi.exceptionhandler.MyMoneyExceptionHandler;
 import br.com.ivanfsilva.mymoneyapi.model.Lancamento;
 import br.com.ivanfsilva.mymoneyapi.repository.LancamentoRepository;
+import br.com.ivanfsilva.mymoneyapi.repository.filter.LancamentoFilter;
 import br.com.ivanfsilva.mymoneyapi.service.LancamentoService;
 import br.com.ivanfsilva.mymoneyapi.service.exception.PessoaInexistenteOuInativaException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/lancamentos")
-public class Lancamentoresource {
+public class LancamentoResource {
 
     @Autowired
     private LancamentoRepository lancamentoRepository;
@@ -36,8 +37,8 @@ public class Lancamentoresource {
     private MessageSource messageSource;
 
     @GetMapping
-    public List<Lancamento> Listar() {
-        return lancamentoRepository.findAll();
+    public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
+        return lancamentoRepository.filtrar(lancamentoFilter);
     }
 
     @GetMapping("/{codigo}")
@@ -59,6 +60,12 @@ public class Lancamentoresource {
         String mensagemDesenvolvedor = ex.toString();
         List<MyMoneyExceptionHandler.Erro> erros = Arrays.asList(new MyMoneyExceptionHandler.Erro(mensagemUsuario, mensagemDesenvolvedor));
         return ResponseEntity.badRequest().body(erros);
+    }
+
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long codigo) {
+        lancamentoRepository.delete(codigo);
     }
 
 }
